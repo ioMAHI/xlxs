@@ -14,11 +14,19 @@ import {
   Download,
   RotateCcw,
   Users,
-  FileSpreadsheet,
+  X,
 } from 'lucide-react';
 import { MemberProfileBadge } from '@/components/common/MemberProfileBadge';
 
-export const NavigationSidebar: React.FC = () => {
+interface NavigationSidebarProps {
+  isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
+}
+
+export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
+  isOpenMobile = false,
+  onCloseMobile,
+}) => {
   const {
     state,
     activeTab,
@@ -40,10 +48,17 @@ export const NavigationSidebar: React.FC = () => {
     { id: 'settlement', label: 'Settlement Matrix', icon: Scale, badge: 'Smart' },
   ];
 
-  return (
-    <aside className="w-72 shrink-0 border-r border-slate-800/80 bg-slate-950/70 backdrop-blur-2xl flex flex-col h-screen sticky top-0 select-none">
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    if (onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
+  const sidebarContent = (
+    <div className="flex flex-col h-full bg-slate-950/95 lg:bg-slate-950/70 backdrop-blur-2xl border-r border-slate-800/80 select-none">
       {/* Brand Header */}
-      <div className="p-5 border-b border-slate-800/70 flex items-center justify-between">
+      <div className="p-4 sm:p-5 border-b border-slate-800/70 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-slate-950 font-black text-lg">
             PB
@@ -55,6 +70,17 @@ export const NavigationSidebar: React.FC = () => {
             <p className="text-[11px] text-emerald-400 font-medium">Mess & Expense Manager</p>
           </div>
         </div>
+
+        {/* Mobile Close Button */}
+        {onCloseMobile && (
+          <button
+            onClick={onCloseMobile}
+            className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-850 transition"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Main Navigation Links */}
@@ -69,7 +95,7 @@ export const NavigationSidebar: React.FC = () => {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => handleTabClick(item.id)}
               className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                 isActive
                   ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm shadow-emerald-500/10'
@@ -78,11 +104,11 @@ export const NavigationSidebar: React.FC = () => {
             >
               <div className="flex items-center gap-3">
                 <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
-                <span>{item.label}</span>
+                <span className="truncate">{item.label}</span>
               </div>
               {item.badge && (
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-md font-bold ${
+                  className={`text-[10px] px-2 py-0.5 rounded-md font-bold shrink-0 ${
                     isActive
                       ? 'bg-emerald-500/20 text-emerald-300'
                       : 'bg-slate-900 text-slate-400 border border-slate-800'
@@ -92,7 +118,7 @@ export const NavigationSidebar: React.FC = () => {
                 </span>
               )}
               {item.count !== undefined && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800 shrink-0">
                   {item.count}
                 </span>
               )}
@@ -121,7 +147,10 @@ export const NavigationSidebar: React.FC = () => {
               return (
                 <button
                   key={m.id}
-                  onClick={() => setSelectedMember(isSelected ? null : m.name)}
+                  onClick={() => {
+                    setSelectedMember(isSelected ? null : m.name);
+                    if (onCloseMobile) onCloseMobile();
+                  }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${
                     isSelected
                       ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold'
@@ -140,7 +169,10 @@ export const NavigationSidebar: React.FC = () => {
       {/* Footer System Quick Actions */}
       <div className="p-4 border-t border-slate-800/80 bg-slate-950/90 space-y-2">
         <button
-          onClick={exportToExcel}
+          onClick={() => {
+            exportToExcel();
+            if (onCloseMobile) onCloseMobile();
+          }}
           className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-emerald-500/20 hover:scale-[1.01]"
         >
           <Download className="w-3.5 h-3.5" />
@@ -149,7 +181,10 @@ export const NavigationSidebar: React.FC = () => {
 
         <div className="flex items-center gap-2 pt-1">
           <button
-            onClick={resetToDefaults}
+            onClick={() => {
+              resetToDefaults();
+              if (onCloseMobile) onCloseMobile();
+            }}
             title="Reset all data back to original Excel file"
             className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg bg-slate-900 hover:bg-rose-950/40 hover:text-rose-400 border border-slate-800 text-slate-400 text-[11px] font-medium transition"
           >
@@ -158,6 +193,31 @@ export const NavigationSidebar: React.FC = () => {
           </button>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden lg:flex w-72 shrink-0 h-screen sticky top-0 flex-col">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Slide-Over Drawer */}
+      {isOpenMobile && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            onClick={onCloseMobile}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative w-80 max-w-[85vw] h-full shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

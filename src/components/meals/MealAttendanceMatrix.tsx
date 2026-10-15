@@ -55,12 +55,20 @@ export const MealAttendanceMatrix: React.FC = () => {
       </div>
 
       {/* Calendar Matrix Grid */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl p-5 overflow-hidden">
-        <div className="overflow-x-auto pb-4">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl p-3.5 sm:p-5 overflow-hidden">
+        {/* Mobile Swipe Hint */}
+        <div className="lg:hidden flex items-center justify-between text-[11px] text-slate-400 mb-3 px-1">
+          <span className="flex items-center gap-1.5 text-amber-300">
+            <span>↔️</span> Swipe table horizontally for all dates
+          </span>
+          <span className="text-[10px] text-slate-500">Oct 12 - 31</span>
+        </div>
+
+        <div className="overflow-x-auto pb-4 scrollbar-thin">
           <table className="w-full text-center text-xs border-collapse">
             <thead>
               <tr className="border-b border-slate-800 text-slate-400">
-                <th className="pb-3 text-left font-semibold sticky left-0 bg-slate-900/90 z-10 pr-4 min-w-[140px]">
+                <th className="pb-3 text-left font-semibold sticky left-0 bg-[#0f172a] z-20 pr-3 min-w-[130px] sm:min-w-[140px] border-r border-slate-800/80 shadow-[2px_0_5px_rgba(0,0,0,0.3)]">
                   Roommate
                 </th>
                 {dates.map((d) => {
@@ -92,7 +100,7 @@ export const MealAttendanceMatrix: React.FC = () => {
                 const totalCost = Math.round(r.totalMeals * state.groceries.mealRate * 100) / 100;
                 return (
                   <tr key={r.name} className="hover:bg-slate-800/30 transition">
-                    <td className="py-3 text-left sticky left-0 bg-slate-900/90 z-10 pr-4">
+                    <td className="py-3 text-left sticky left-0 bg-[#0f172a] z-20 pr-3 border-r border-slate-800/80 shadow-[2px_0_5px_rgba(0,0,0,0.3)]">
                       <MemberProfileBadge name={r.name} size="sm" />
                     </td>
 
@@ -152,7 +160,7 @@ export const MealAttendanceMatrix: React.FC = () => {
 
               {/* Total Daily Summary Row */}
               <tr className="border-t-2 border-slate-700 bg-slate-950/60 font-bold">
-                <td className="py-3 text-left uppercase tracking-wider text-xs text-slate-300 sticky left-0 bg-slate-950 z-10 pr-4">
+                <td className="py-3 text-left uppercase tracking-wider text-xs text-slate-300 sticky left-0 bg-[#0b1120] z-20 pr-3 border-r border-slate-800/80 shadow-[2px_0_5px_rgba(0,0,0,0.3)]">
                   Daily Totals
                 </td>
                 {dailyTotals.map((tot, idx) => (

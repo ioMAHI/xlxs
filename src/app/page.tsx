@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { BachelorProvider, useBachelor } from '@/context/BachelorContext';
 import { NavigationSidebar } from '@/components/layout/NavigationSidebar';
 import { TopNavigationBar } from '@/components/layout/TopNavigationBar';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import { DashboardOverview } from '@/components/dashboard/DashboardOverview';
 import { GroceriesBazaarView } from '@/components/groceries/GroceriesBazaarView';
 import { MealAttendanceMatrix } from '@/components/meals/MealAttendanceMatrix';
@@ -16,6 +17,7 @@ import { SummarySettlementCard } from '@/components/dashboard/SummarySettlementC
 
 function MainAppShell() {
   const { activeTab, state } = useBachelor();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const renderActiveView = () => {
     switch (activeTab) {
@@ -54,12 +56,21 @@ function MainAppShell() {
 
   return (
     <div className="flex min-h-screen bg-[#090d16] text-slate-100 font-sans">
-      <NavigationSidebar />
+      {/* Sidebar (Desktop persistent + Mobile slide-over drawer) */}
+      <NavigationSidebar
+        isOpenMobile={isMobileNavOpen}
+        onCloseMobile={() => setIsMobileNavOpen(false)}
+      />
+
       <div className="flex-1 flex flex-col min-w-0">
-        <TopNavigationBar />
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <TopNavigationBar onOpenMobileMenu={() => setIsMobileNavOpen(true)} />
+
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-7xl w-full mx-auto">
           {renderActiveView()}
         </main>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <MobileBottomNav onOpenMenu={() => setIsMobileNavOpen(true)} />
       </div>
     </div>
   );

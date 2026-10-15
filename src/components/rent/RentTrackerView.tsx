@@ -55,7 +55,7 @@ export const RentTrackerView: React.FC = () => {
           <span className="text-xs uppercase tracking-wider font-semibold text-slate-400">
             Select Billing Month
           </span>
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 mt-2 overflow-x-auto pb-1 max-w-full">
             {state.rent.records.map((r) => (
               <button
                 key={r.monthKey}
